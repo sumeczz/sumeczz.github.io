@@ -1,55 +1,34 @@
-let lastPos = null;
-let totalDistance = 0;
-const distEl = document.getElementById("ride-distance");
-const avgSpeedEl = document.getElementById("avg-speed");
+let previousPosition = null; // Předchozí pozice pro výpočet vzdálenosti
+let totalDistance = 0; // Celková ujetá vzdálenost v kilometrech
 
-export function initDistanceTracker() {
-  navigator.geolocation.watchPosition((pos) => {
-    const { latitude, longitude, speed } = pos.coords;
+const distanceEl = document.getElementById("ride-distance"); // Element pro zobrazení vzdálenosti
 
-    if (lastPos) {
-      const dist = calcDistance(lastPos.lat, lastPos.lon, latitude, longitude);
-      totalDistance += dist;
-      distEl.textContent = `${totalDistance.toFixed(2)} km`;
-
-      const timeH = getTimeInHours();
-      if (timeH > 0) {
-        const avgSpeed = totalDistance / timeH;
-        avgSpeedEl.textContent = `${avgSpeed.toFixed(1)} km/h`;
-      }
-    }
-
-    lastPos = { lat: latitude, lon: longitude };
-  }, null, { enableHighAccuracy: true });
+export function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Poloměr Země v km
+  const dLat = degToRad(lat2 - lat1);
+  const dLon = degToRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(degToRad(lat1)) * Math.cos(degToRad(lat2)) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c; // Vzdálenost v km
 }
 
-function calcDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371; // Earth radius in km
-  const dLat = toRad(lat2 - lat1);
-  const dLon = toRad(lon2 - lon1);
-  const a = Math.sin(dLat/2) ** 2 +
-            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon/2) ** 2;
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-}
-
-function toRad(deg) {
+function degToRad(deg) {
   return deg * (Math.PI / 180);
 }
 
-function getTimeInHours() {
-  const t = document.getElementById("ride-time").textContent.split(":");
-  const h = parseInt(t[0]), m = parseInt(t[1]), s = parseInt(t[2]);
-  return h + m / 60 + s / 3600;
-}
-
-export function resetDistance() {
-  totalDistance = 0;
-  lastPos = null;
-  distEl.textContent = "0.0 km";
-  avgSpeedEl.textContent = "0.0 km/h";
-}
-
-// PŘIDÁNO: Export funkce getDistance
-export function getDistance() {
-  return totalDistance;
+export function updateDistance(position) {
+  if (previousPosition) {
+    const distance = calculateDistance(
+      previousPosition.coords.latitude,
+      previousPosition.coords.longitude,
+      position.coords.latitude,
+      position.coords.longitude
+    );
+    totalDistance += distance; // Přičítání nové vzdálenosti
+    distanceEl.textContent = `${totalDistance.toFixed(1)} km`; // Aktualizace vzdálenosti na stránce
+  }
+  previousPosition = position; // Uložení nové pozice
 }
