@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyklo Tachometr</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Arial', sans-serif; }
+  </style>
+</head>
+<body class="bg-gray-900 text-white p-4 min-h-screen flex flex-col justify-between">
+  <header class="text-center text-xl font-bold py-4">
+    🚴‍♂️ CYKLO TACHOMETRT
+  </header>
+
+  <main class="flex-1 flex flex-col items-center justify-center space-y-6">
+    <div id="speed-display" class="text-6xl font-bold">-- <span class="text-2xl">km/h</span></div>
+    <div id="ride-status" class="text-green-400 text-lg">🟢 Jízda aktivní</div>
+
+    <div class="w-full max-w-sm space-y-2 text-sm">
+      <div class="flex justify-between">
+        <span>Čas jízdy:</span><span id="ride-time">00:00:00</span>
+      </div>
+      <div class="flex justify-between">
+        <span>Ujetá vzdálenost:</span><span id="ride-distance">0.0 km</span>
+      </div>
+      <div class="flex justify-between">
+        <span>Průměrná rychlost:</span><span id="avg-speed">0.0 km/h</span>
+      </div>
+      <div class="flex justify-between">
+        <span>Max. rychlost:</span><span id="max-speed">0.0 km/h</span>
+      </div>
+    </div>
+
+    <div class="flex gap-4">
+      <button id="pause-btn" class="bg-yellow-500 text-black font-bold py-2 px-4 rounded-2xl shadow-lg">⏸ Pauza</button>
+      <button id="stop-btn" class="bg-red-600 text-white font-bold py-2 px-4 rounded-2xl shadow-lg">🛑 Zastavit</button>
+    </div>
+  </main>
+
+  <footer class="flex justify-around py-4 border-t border-gray-700">
+    <button class="text-white">🗺️ Mapa</button>
+    <button class="text-white">⚙️ Nastavení</button>
+  </footer>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
