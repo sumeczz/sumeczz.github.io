@@ -1,18 +1,19 @@
-let previousPosition = null; // Předchozí pozice pro výpočet vzdálenosti
-let totalDistance = 0; // Celková ujetá vzdálenost v kilometrech
+let previousPosition = null;
+let totalDistance = 0;
 
-const distanceEl = document.getElementById("ride-distance"); // Element pro zobrazení vzdálenosti
+const distanceEl = document.getElementById("ride-distance");
 
 export function calculateDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371; // Poloměr Země v km
+  const R = 6371;
   const dLat = degToRad(lat2 - lat1);
   const dLon = degToRad(lon2 - lon1);
   const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(degToRad(lat1)) * Math.cos(degToRad(lat2)) *
-    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(degToRad(lat1)) *
+      Math.cos(degToRad(lat2)) *
+      Math.sin(dLon / 2) ** 2;
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c; // Vzdálenost v km
+  return R * c;
 }
 
 function degToRad(deg) {
@@ -27,8 +28,16 @@ export function updateDistance(position) {
       position.coords.latitude,
       position.coords.longitude
     );
-    totalDistance += distance; // Přičítání nové vzdálenosti
-    distanceEl.textContent = `${totalDistance.toFixed(1)} km`; // Aktualizace vzdálenosti na stránce
+    totalDistance += distance;
+    distanceEl.textContent = `${totalDistance.toFixed(2)} km`;
+    previousPosition = position;
+    return distance;
+  } else {
+    previousPosition = position;
+    return 0;
   }
-  previousPosition = position; // Uložení nové pozice
+}
+
+export function getTotalDistance() {
+  return totalDistance;
 }
